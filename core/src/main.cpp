@@ -31,14 +31,17 @@ cv::Scalar age_color(int age){
 }
 
 
-cv::Mat draw(cv::Mat image, int array_food[C][W][H], int radius){
+cv::Mat draw(int height, int width, int array_food[C][W][H], int radius){
+    cv::Mat image(height, width, CV_8UC3);
     auto t1 = chrono::high_resolution_clock::now();
 #pragma omp parallel for
     for (int i=0;i<W;i++){
         for(int j=0;j<H;j++){
+            int size = (int)(array_food[5][i][j] * (radius / 6.0));
             if(array_food[0][i][j] == 1){
-                int size = (int)(array_food[5][i][j] * (radius / 6.0));
                 cv::circle(image, cv::Point(i*radius, j*radius), size, age_color(array_food[5][i][j]), -1);
+            } else if (array_food[0][i][j] == 2){
+                cv::circle(image, cv::Point(i*radius, j*radius), size, cv::Scalar(200, 120, 255), -1);
             }
         }
     }
@@ -59,15 +62,16 @@ int main() {
     cout << radius << endl;
 
     Food class_food = Food(height, width);
-    cv::Mat output(height, width, CV_8UC3);
 
-    int array_food[C][W][H] = {0};
-    class_food.create_food(W, H, array_food);
+
+    int map_array[C][W][H] = {0};
+    class_food.create_food(W, H, map_array, 25);
+    class_food.create_bact(W, H, map_array, 10);
 
     /// Init draw
-    output = draw(output, array_food, radius);
-    cv::imshow("Output", output);
-    cv::waitKey(0);
+//    cv::Mat output = draw(width, height, map_array, radius);
+//    cv::imshow("Output", output);
+//    cv::waitKey(0);
 
     int k = 0;
     while (true){
@@ -75,7 +79,7 @@ int main() {
         cout << "K: " << k << endl;
         cout << "Draw" << endl;
 
-        output = draw(output, array_food, radius);
+        cv::Mat output = draw(width, height, map_array, radius);
         cv::imshow("Output", output);
         int key = cv::waitKey(1);
         if (key == 27){
@@ -85,7 +89,7 @@ int main() {
 
         /// Food increase CUDA
         auto t11 = chrono::high_resolution_clock::now();
-        cuda_funk.calculate_food(array_food);
+        cuda_funk.calculate_food(map_array);
         auto t22 = chrono::high_resolution_clock::now();
         double delta = chrono::duration_cast<chrono::microseconds>(t22 - t11).count();
         printf("Calculate: %f FPS: %f\n", delta / 1000000, 1/ (delta / 1000000));

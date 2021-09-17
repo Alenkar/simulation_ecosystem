@@ -19,52 +19,42 @@ Food::Food(int height, int width){
 }
 
 
-//void Food::create_food(int height, int width, std::vector<FoodObj> &vector_food, int** id_matrix){
-void Food::create_food(int height, int width, array2D *array_food){
-    /*
+void Food::create_food(int height, int width, array2D *array, int count){
     /// Create food
-    FoodObj food;
-    do{
-        food.position.x = rnd_w(rng);
-        food.position.y = rnd_h(rng);
-
-        food.position.x = food.position.x - food.position.x % d;
-        food.position.y = food.position.y - food.position.y % d;
-
-        if(food.position.x >= 0 && food.position.y >= 0 &&
-                food.position.x <= width && food.position.y <= height){
-            if (!find_in(vector_food, food)){
-                food.id = 0;
-                /// rand_type
-                food.type = 0;
-
-                vector_food.push_back(food);
-                id_matrix[food.position.x][food.position.y] = 1;
-            }
-        }
-    }while(vector_food.size() != count_init_food);
-    */
-
-    /// Create food
-
     int counter = 0;
     do{
         int pos_x = rnd_w(rng);
         int pos_y = rnd_h(rng);
 
-//        pos_x = pos_x - pos_x % d;
-//        pos_y = pos_y - pos_y % d;
-
         if(pos_x >= 0 && pos_y >= 0 && pos_x <= width && pos_y <= height){
-            if (array_food[0][pos_x][pos_y] != 1){
+            if (array[0][pos_x][pos_y] == 0){
                 /// rand_type
-                array_food[0][pos_x][pos_y] = 1;
-                array_food[1][pos_x][pos_y] = 1;
-                array_food[5][pos_x][pos_y] = 1;
+                array[0][pos_x][pos_y] = 1;
+                array[1][pos_x][pos_y] = 1;
+                array[5][pos_x][pos_y] = 1;
                 counter++;
             }
         }
     }while(counter != count_init_food);
+}
+
+void Food::create_bact(int height, int width, array2D *array, int count){
+    /// Create bacteries
+    int counter = 0;
+    do{
+        int pos_x = rnd_w(rng);
+        int pos_y = rnd_h(rng);
+
+        if(pos_x >= 0 && pos_y >= 0 && pos_x <= width && pos_y <= height){
+            if (array[0][pos_x][pos_y] == 0){
+                /// rand_type
+                array[0][pos_x][pos_y] = 2;
+                array[1][pos_x][pos_y] = 1;
+                array[5][pos_x][pos_y] = 5;
+                counter++;
+            }
+        }
+    }while(counter != count);
 }
 
 

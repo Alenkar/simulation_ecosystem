@@ -56,7 +56,7 @@ __global__ void calculate_obj(int array_food[C][W][H]){
 
     if (array_food[0][idx][idy] == 1){
         /// Remove
-        if(array_food[1][idx][idy] == 50){//array_food[5][idx][idy] == 0){
+        if(array_food[5][idx][idy] == 0){
             array_food[0][idx][idy] = 0;
             array_food[1][idx][idy] = 0;
             array_food[2][idx][idy] = 0;
@@ -67,8 +67,6 @@ __global__ void calculate_obj(int array_food[C][W][H]){
             check_safety(array_food, idx, idy, 8, safe);
             /// Check non blocked
             if (safe == false){
-
-
                 /// Check safety
                 check_safety(array_food, idx, idy, 6, safe);
 
@@ -88,7 +86,7 @@ __global__ void calculate_obj(int array_food[C][W][H]){
                 }
 
                 ///Grow direction
-                if (array_food[3][idx][idy] == 3){
+                if (array_food[3][idx][idy] == 5){
                     array_food[3][idx][idy] = 0;
     //                random_shuffle(direction, direction+9);
 
@@ -108,6 +106,53 @@ __global__ void calculate_obj(int array_food[C][W][H]){
                 }
             } else {
                 array_food[5][idx][idy] = 6;
+            }
+        }
+    } else if (array_food[0][idx][idy] == 2){
+        if(array_food[5][idx][idy] == 0){
+            array_food[0][idx][idy] = 0;
+            array_food[1][idx][idy] = 0;
+            array_food[2][idx][idy] = 0;
+            array_food[3][idx][idy] = 0;
+            array_food[4][idx][idy] = 0;
+        } else {
+            array_food[1][idx][idy] += 1;
+
+            if (array_food[1][idx][idy] % 5 == 0){
+                if (array_food[5][idx][idy] < 6){
+                    array_food[5][idx][idy] += 1;
+                }
+            }
+
+            for (auto route : direction){
+                int pos_x = idx + route[0];
+                int pos_y = idy + route[1];
+
+                if(pos_x >= 0 && pos_y >= 0 && pos_x <= W && pos_y <= H){
+                    if (array_food[0][pos_x][pos_y] == 0){
+                        /// Step
+                        array_food[0][pos_x][pos_y] = array_food[0][idx][idy];
+                        array_food[1][pos_x][pos_y] = array_food[1][idx][idy];
+                        array_food[2][pos_x][pos_y] = array_food[2][idx][idy];
+                        array_food[3][pos_x][pos_y] = array_food[3][idx][idy];
+                        array_food[4][pos_x][pos_y] = array_food[4][idx][idy];
+                        array_food[5][pos_x][pos_y] = array_food[5][idx][idy];
+
+                        array_food[0][idx][idy] = 0;
+                        array_food[1][idx][idy] = 0;
+                        array_food[2][idx][idy] = 0;
+                        array_food[3][idx][idy] = 0;
+                        array_food[4][idx][idy] = 0;
+                        array_food[5][idx][idy] = 0;
+                        break;
+                    } else if(array_food[0][pos_x][pos_y] == 1){
+                        /// Eat food
+                        if (array_food[5][pos_x][pos_y] > 0){
+                            array_food[5][pos_x][pos_y] = array_food[5][pos_x][pos_y] = 1;
+                        }
+                        break;
+                    }
+                }
             }
         }
     }

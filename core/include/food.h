@@ -31,7 +31,8 @@ class Food{
 public:
     Food(int height, int width);
     void step();
-    void create_food(int height, int width, array2D *array_food);
+    void create_food(int height, int width, array2D *array_food, int count);
+    void create_bact(int height, int width, array2D *array_food, int count);
     bool find_in(vector<FoodObj> v, FoodObj f);
     bool check_safety(vector<FoodObj> vector_food, FoodObj food);
     cv::Scalar age_color(int age);
