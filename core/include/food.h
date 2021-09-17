@@ -1,3 +1,6 @@
+#ifndef FOOD_H
+#define FOOD_H
+
 #include <iostream>
 #include <random>
 #include <algorithm>
@@ -8,6 +11,7 @@
 #include <opencv2/highgui.hpp>
 
 #include <typeinfo>
+#include <settings.h>
 
 using namespace std;
 
@@ -21,17 +25,13 @@ struct FoodObj{
     int growth_points = 0;
     int reproduction_points = 0;
     int health_points;
-
-    std::mt19937 rng;
-    std::uniform_int_distribution<int> rnd_w;
-    std::uniform_int_distribution<int> rnd_h;
-    std::uniform_int_distribution<int> rnd_type;
 };
 
 class Food{
 public:
-    Food();
-    void create_food(int height, int width, vector<FoodObj> &vector_food, int** id_matrix);
+    Food(int height, int width);
+    void step();
+    void create_food(int height, int width, array2D *array_food);
     bool find_in(vector<FoodObj> v, FoodObj f);
     bool check_safety(vector<FoodObj> vector_food, FoodObj food);
     cv::Scalar age_color(int age);
@@ -39,4 +39,11 @@ public:
 
     int d;
     int count_init_food;
+
+    std::mt19937 rng;
+    std::uniform_int_distribution<int> rnd_w;
+    std::uniform_int_distribution<int> rnd_h;
+    std::uniform_int_distribution<int> rnd_type;
 };
+
+#endif

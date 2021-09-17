@@ -4,7 +4,7 @@
 Food::Food(int height, int width){
     cout << "Init" << endl;
 
-    count_init_food = 25;
+    count_init_food = 50;
     d = 5;
     direction = {{-d, -d}, {0, -d}, {d, -d},
                         {-d, 0}, {0, 0}, {d, 0},
@@ -13,24 +13,16 @@ Food::Food(int height, int width){
     std::random_device rd;
     std::mt19937 rng(rd());
     rnd_w = std::uniform_int_distribution<int>(0, width);
-    std::uniform_int_distribution<int> rnd_h(0, height);
-    std::uniform_int_distribution<int> rnd_type(0, 3);
+    rnd_h = std::uniform_int_distribution<int>(0, height);
+    rnd_type = std::uniform_int_distribution<int>(0, 3);
 
 }
 
 
-int rand_type(){
-    return ;
-}
-
-
-void Food::create_food(int height, int width, std::vector<FoodObj> &vector_food, int** id_matrix){
+//void Food::create_food(int height, int width, std::vector<FoodObj> &vector_food, int** id_matrix){
+void Food::create_food(int height, int width, array2D *array_food){
+    /*
     /// Create food
-    std::random_device rd;
-    std::mt19937 rng(rd());
-    std::uniform_int_distribution<int> rnd_w(0, width);
-    std::uniform_int_distribution<int> rnd_h(0, height);
-
     FoodObj food;
     do{
         food.position.x = rnd_w(rng);
@@ -43,7 +35,7 @@ void Food::create_food(int height, int width, std::vector<FoodObj> &vector_food,
                 food.position.x <= width && food.position.y <= height){
             if (!find_in(vector_food, food)){
                 food.id = 0;
-                rand_type
+                /// rand_type
                 food.type = 0;
 
                 vector_food.push_back(food);
@@ -51,12 +43,34 @@ void Food::create_food(int height, int width, std::vector<FoodObj> &vector_food,
             }
         }
     }while(vector_food.size() != count_init_food);
+    */
+
+    /// Create food
+
+    int counter = 0;
+    do{
+        int pos_x = rnd_w(rng);
+        int pos_y = rnd_h(rng);
+
+//        pos_x = pos_x - pos_x % d;
+//        pos_y = pos_y - pos_y % d;
+
+        if(pos_x >= 0 && pos_y >= 0 && pos_x <= width && pos_y <= height){
+            if (array_food[0][pos_x][pos_y] != 1){
+                /// rand_type
+                array_food[0][pos_x][pos_y] = 1;
+                array_food[1][pos_x][pos_y] = 1;
+                array_food[5][pos_x][pos_y] = 1;
+                counter++;
+            }
+        }
+    }while(counter != count_init_food);
 }
 
 
 bool Food::find_in(vector<FoodObj> v, FoodObj f){
     for(auto vi : v){
-        if (vi.pos == f.pos){
+        if (vi.position == f.position){
             return true;
         }
     }
@@ -68,7 +82,7 @@ bool Food::check_safety(vector<FoodObj> vector_food, FoodObj food){
     int c = 0;
     for (auto dir : direction){
         FoodObj around_food = food;
-        around_food.pos += dir;
+        around_food.position += dir;
         if(find_in(vector_food, around_food)){
             c++;
         }
@@ -93,4 +107,9 @@ cv::Scalar Food::age_color(int age){
     }
 }
 
+
+void Food::step()
+{
+
+}
 
